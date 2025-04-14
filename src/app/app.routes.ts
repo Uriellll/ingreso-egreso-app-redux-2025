@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { guardGuard } from './guards/guard.guard';
 
 export const routes: Routes = [
   {
@@ -11,9 +12,9 @@ export const routes: Routes = [
   },
   {
     path: '',
-    loadComponent: () => import('./dashboard/dashboard.component'),
     loadChildren: () =>
       import('./dashboard/dashboard.routes').then((m) => m.routesDashboard),
+    canMatch: [guardGuard]
   },
   { path: '**', redirectTo: '' },
 ];
