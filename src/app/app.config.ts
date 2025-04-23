@@ -8,14 +8,17 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideStore } from '@ngrx/store';
 import { appReducers } from './ngrx/app.reducer';
-import {provideStoreDevtools} from '@ngrx/store-devtools'
+import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideStore(appReducers),
-    provideStoreDevtools({maxAge: 25, logOnly: !isDevMode()}),
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideRouter(routes),
-    provideFirebaseApp(() => initializeApp({...environment.firebaseConfig})),
+    provideFirebaseApp(() => initializeApp({ ...environment.firebaseConfig })),
     provideFirestore(() => getFirestore()),
-    provideAuth(() => getAuth())]
+    provideAuth(() => getAuth()),
+    provideCharts(withDefaultRegisterables()),
+  ],
 };

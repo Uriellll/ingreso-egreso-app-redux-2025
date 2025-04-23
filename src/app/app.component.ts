@@ -15,7 +15,6 @@ export class AppComponent implements OnInit {
   authService = inject((AuthService))
   ngOnInit(): void {
     this.authService.initAuthListener().subscribe(res =>{
-      console.log(res);
     }
     )
   }

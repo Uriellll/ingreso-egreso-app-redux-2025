@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../ngrx/app.reducer';
 import * as authActions from '../ngrx/auth.actions';
 import { Subscription } from 'rxjs';
+import * as ingresoEgresoActions from '../ngrx/ingreso-egreso.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -22,11 +23,14 @@ export class AuthService {
   private fireStore = inject(Firestore);
   private store = inject(Store<AppState>);
   private userSubs!: Subscription;
+  private user!: UserInterface;
 
   constructor() {}
+  get getUser() {
+    return this.user;
+  }
   initAuthListener() {
     authState(this.auth).subscribe((fuser) => {
-      console.log(fuser);
       if (fuser) {
         const userDocRef = doc(this.fireStore, `${fuser.uid}`, 'usuario');
         //unsubscribe debido a que se está conectado a socket de firebase
@@ -36,11 +40,14 @@ export class AuthService {
             nombre: docUser.nombre,
             email: docUser.email,
           };
-          this.store.dispatch(authActions.setUser({user}));
+          this.user = user;
+          this.store.dispatch(authActions.setUser({ user }));
         });
       } else {
+        this.user = { uid: null, nombre: null, email: null };
         this.userSubs.unsubscribe();
         this.store.dispatch(authActions.unSetUser());
+        this.store.dispatch(ingresoEgresoActions.unSetItems());
       }
     });
     return authState(this.auth);
